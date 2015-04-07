@@ -14,7 +14,7 @@ RUN  echo "deb http://archive.ubuntu.com/ubuntu trusty main universe\n" > /etc/a
 RUN apt-get update -qqy \
   && apt-get -qqy --no-install-recommends install \
     ca-certificates \
-    openjdk-7-jre-headless \
+    openjdk-7-jre \
     unzip \
     wget \
   && rm -rf /var/lib/apt/lists/* \
