@@ -24,7 +24,7 @@ then
 fi
 
 xvfb-run --server-args="$DISPLAY -screen 0 $GEOMETRY -fbdir /tmp/fbdir -ac +extension RANDR" \
-  java -Dvideo.framerate=4 -D video.xvfbscreen=/tmp/fbdir -cp /opt/selenium/selenium-video-node.jar:/opt/selenium/selenium-server-standalone.jar \
+  java -Dvideo.framerate=4 -Dvideo.xvfbscreen=/tmp/fbdir -cp /opt/selenium/selenium-video-node.jar:/opt/selenium/selenium-server-standalone.jar \
     org.openqa.grid.selenium.GridLauncher \
     -servlets com.aimmac23.node.servlet.VideoRecordingControlServlet -proxy com.aimmac23.hub.proxy.VideoProxy \
     -role node \
