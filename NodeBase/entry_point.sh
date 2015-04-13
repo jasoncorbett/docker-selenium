@@ -18,6 +18,11 @@ function shutdown {
 
 # TODO: Look into http://www.seleniumhq.org/docs/05_selenium_rc.jsp#browser-side-logs
 
+if [ ! -d "/tmp/fbdir" ];
+then
+	mkdir /tmp/fbdir
+fi
+
 xvfb-run --server-args="$DISPLAY -screen 0 $GEOMETRY -fbdir /tmp/fbdir -ac +extension RANDR" \
   java -Dvideo.framerate=4 -D video.xvfbscreen=/tmp/fbdir -cp /opt/selenium/selenium-video-node.jar:/opt/selenium/selenium-server-standalone.jar \
     org.openqa.grid.selenium.GridLauncher \
