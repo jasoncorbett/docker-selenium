@@ -1,46 +1,25 @@
-# Selenium Grid Node - Firefox Debug
+# Selenium Grid Standalone - Chrome Debug
 
-_This image is only intended for development purposes!_ Runs a Selenium Grid Node with a VNC Server to allow you to visually see the browser being automated. Since it runs additional services to support this it is too heavy weight for usage within a Selenium Grid cluster.
+_This image is only intended for development purposes!_ Runs a Selenium Grid Standalone with a VNC Server to allow you to visually see the browser being automated.
+
 
 ## Dockerfile
 
-[`selenium/node-firefox-debug` Dockerfile](https://github.com/SeleniumHQ/docker-selenium/blob/master/NodeFirefoxDebug/Dockerfile)
+[`selenium/standalone-chrome-debug` Dockerfile](https://github.com/SeleniumHQ/docker-selenium/blob/master/StandaloneDebugChrome/Dockerfile)
 
 ## How to use this image
 
-First, you will need a Selenium Grid Hub that the Node will connect to.
 
 ```
-$ docker run -d -P --name selenium-hub selenium/hub
+$ docker run -d -P selenium/standalone-chrome-debug
 ```
 
-Once the hub is up and running will want to launch nodes that can run tests.
 
-```
-$ docker run -d -P --link selenium-hub:hub selenium/node-firefox-debug
-```
-
-You can acquire the port that the VNC server is exposed to by running:
+You can acquire the port that Selenium is listening on by running:
 
 ``` bash
-$ docker port <container-name|container-id> 5900
+$ docker port <container-name|container-id> 4444
 #=> 0.0.0.0:49338
-```
-
-Using RealVNC you can look in view only mode, to avoid accidentally messing up your tests, utilizing our [vncview script](https://github.com/SeleniumHQ/docker-selenium/blob/master/bin/vncview).
-
-``` bash
-$ ./bin/vncview 127.0.0.1:49338
-```
-
-If you are running Boot2Docker on Mac then you already have a [VNC client](http://www.davidtheexpert.com/post.php?id=5) built-in. You can connect by entering `vnc://<boot2docker-ip>:49160` in Safari or [Alfred](http://www.alfredapp.com/)
-
-When you are prompted for the password it is __secret__. If you wish to change this then you should either change it in the `/NodeBase/Dockerfile` and build the images yourself, or you can define a docker image that derives from the posted ones which reconfigures it:
-
-``` dockerfile
-FROM selenium/node-firefox-debug:2.46.0
-
-RUN x11vnc -storepasswd <your-password-here> /home/seluser/.vnc/passwd
 ```
 
 ## What is Selenium?

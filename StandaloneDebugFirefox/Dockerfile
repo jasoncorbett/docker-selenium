@@ -1,4 +1,4 @@
-#FROM selenium/node-*:2.45.0 Proper FROM attr will be applied throuh generate.sh
+FROM selenium/standalone-firefox:2.46.0
 MAINTAINER Selenium <selenium-developers@googlegroups.com>
 
 USER root

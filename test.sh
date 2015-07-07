@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 DEBUG=''
 
 if [ -n "$1" ] && [ $1 == 'debug' ]; then
@@ -9,37 +9,53 @@ echo Building test container image
 docker build -t selenium/test:local ./Test
 
 echo Starting Selenium Container
-HUB=$(docker run -d selenium/hub:2.45.0)
+HUB=$(docker run -d selenium/hub:2.46.0)
 HUB_NAME=$(docker inspect -f '{{ .Name  }}' $HUB | sed s:/::)
 sleep 2
 
-NODE_CHROME=$(docker run -d --link $HUB_NAME:hub  selenium/node-chrome$DEBUG:2.45.0)
-NODE_FIREFOX=$(docker run -d --link $HUB_NAME:hub selenium/node-firefox$DEBUG:2.45.0)
+NODE_CHROME=$(docker run -d --link $HUB_NAME:hub  selenium/node-chrome$DEBUG:2.46.0)
+NODE_FIREFOX=$(docker run -d --link $HUB_NAME:hub selenium/node-firefox$DEBUG:2.46.0)
 
 docker logs -f $HUB &
 docker logs -f $NODE_CHROME &
 docker logs -f $NODE_FIREFOX &
 sleep 2
 
-echo Running test container...
-docker run --rm -it --link $HUB_NAME:hub selenium/test:local
-STATUS=$?
+function test_node {
+  BROWSER=$1
+  echo Running $BROWSER test...
+  TEST_CMD="node smoke-$BROWSER.js"
+  docker run -it --link $HUB_NAME:hub -e TEST_CMD="$TEST_CMD" selenium/test:local
+  STATUS=$?
+  TEST_CONTAINER=$(docker ps -aq | head -1)
 
-echo Tearing down Selenium Chrome Node container
-docker stop $NODE_CHROME
-docker rm $NODE_CHROME
+  if [ ! $STATUS == 0 ]; then
+    echo Failed
+    exit 1
+  fi
 
-echo Tearing down Selenium Firefox Node container
-docker stop $NODE_FIREFOX
-docker rm $NODE_FIREFOX
+  if [ ! "$CIRCLECI" ==  "true" ]; then
+    echo Removing the test container
+    docker rm $TEST_CONTAINER
+  fi
 
-echo Tearing down Selenium Hub container
-docker stop $HUB
-docker rm $HUB
+}
 
-if [ ! $STATUS == 0 ]; then
-  echo Failed
-  exit 1
+test_node chrome $DEBUG
+test_node firefox $DEBUG
+
+if [ ! "$CIRCLECI" ==  "true" ]; then
+  echo Tearing down Selenium Chrome Node container
+  docker stop $NODE_CHROME
+  docker rm $NODE_CHROME
+
+  echo Tearing down Selenium Firefox Node container
+  docker stop $NODE_FIREFOX
+  docker rm $NODE_FIREFOX
+
+  echo Tearing down Selenium Hub container
+  docker stop $HUB
+  docker rm $HUB
 fi
 
 echo Done

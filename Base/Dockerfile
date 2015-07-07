@@ -24,7 +24,7 @@ RUN apt-get update -qqy \
 # Selenium
 #==========
 RUN  mkdir -p /opt/selenium \
-  && wget --no-verbose http://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar -O /opt/selenium/selenium-server-standalone.jar && wget --no-verbose https://aimmac23.com/public/maven-repository/com/aimmac23/selenium-video-node/1.7/selenium-video-node-1.7.jar -O /opt/selenium/selenium-video-node.jar
+  && wget --no-verbose http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar -O /opt/selenium/selenium-server-standalone.jar && wget --no-verbose https://aimmac23.com/public/maven-repository/com/aimmac23/selenium-video-node/1.7/selenium-video-node-1.7.jar -O /opt/selenium/selenium-video-node.jar
 
 #========================================
 # Add normal user with passwordless sudo
